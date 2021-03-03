@@ -1,0 +1,39 @@
+{
+  "name": "vue-insert-component",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/vue-insert-component.umd.js",
+  "browser": "dist/vue-insert-component.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-latest": "^6.24.1",
+    "eslint": "^7.21.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-vue": "^7.7.0",
+    "rollup": "^2.40.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^2.1.0",
+    "typescript": "^4.1.3",
+    "vue": "^3.0.7"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.7"
+  },
+  "sideEffects": false,
+  "types": "./dist/index.d.ts"
+}

@@ -1,0 +1,1 @@
+> Insert Vue component into root component.
