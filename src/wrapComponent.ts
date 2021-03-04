@@ -1,6 +1,6 @@
 import {
-  defineComponent, Component, PropType, getCurrentInstance,
-  h, shallowRef, triggerRef
+  DefineComponent, Component, PropType, getCurrentInstance,
+  defineComponent, h, shallowRef, triggerRef
 } from 'vue'
 
 export default defineComponent({
@@ -11,22 +11,31 @@ export default defineComponent({
     }
   },
   setup () {
-    const list = shallowRef([] as Component[])
+    const list = shallowRef([] as DefineComponent[])
 
     const instance = getCurrentInstance()
     if (instance) {
-      instance.appContext.config.globalProperties.$insert = (component: Component) => {
+      instance.appContext.config.globalProperties.$insert = (component: DefineComponent) => {
         list.value.push(component)
         triggerRef(list)
       }
     }
 
-    return { list }
+    return {
+      list,
+      onClose (component: DefineComponent) {
+        const index = list.value.findIndex(el => el === component)
+        list.value.splice(index, 1)
+        triggerRef(list)
+      }
+    }
   },
   render () {
     return [
       this.rootComponent ? h(this.rootComponent) : h('div'),
-      ...this.list.map(item => h(item))
+      ...this.list.map(item => h(item, {
+        onUninsertOnce: () => this.onClose(item)
+      }))
     ]
   }
 })
