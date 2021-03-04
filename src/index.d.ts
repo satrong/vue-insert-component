@@ -1,11 +1,13 @@
-import { Component } from 'vue'
+import { Component, App } from 'vue'
 
-declare function InsertWrap<T>(compoent: Component): { rootApp: T }
+declare function InsertWrap(rootCompoent: Component): { rootApp: App<Element> }
 
 export default InsertWrap
 
+type removeComponentCallback = () => void
+
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    $insert(component: Component): void
+    $insert(component: Component): removeComponentCallback
   }
 }
