@@ -1,10 +1,10 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import resolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 import typescript from 'rollup-plugin-typescript'
 import pkg from './package.json'
-import babel from 'rollup-plugin-babel'
+import babel from '@rollup/plugin-babel'
 
 (async () => await fs.rm(path.join(__dirname, 'dist'), { recursive: true, force: true }))()
 
@@ -50,7 +50,8 @@ function createConfig (format, config) {
       commonjs(),
       typescript(),
       babel({
-        exclude: 'node_modules/**'
+        exclude: 'node_modules/**',
+        babelHelpers: 'bundled'
       }),
       CopyFile()
     ],
