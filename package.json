@@ -1,6 +1,6 @@
 {
-  "name": "vue-insert-component",
-  "version": "1.0.0",
+  "name": "@satrong/vue-insert-component",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/vue-insert-component.es.js",
   "unpkg": "dist/vue-insert-component.global.js",
@@ -8,8 +8,14 @@
   "browser": "dist/vue-insert-component.es.js",
   "scripts": {
     "build": "rollup -c",
+    "release": "sh scripts/release.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist/*.js",
+    "dist/*.ts",
+    "README.md"
+  ],
   "author": "satrong",
   "license": "ISC",
   "devDependencies": {
@@ -33,8 +39,15 @@
     "typescript": "^4.1.3",
     "vue": "^3.0.7"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/satrong/vue-insert-component"
+  },
   "peerDependencies": {
     "vue": "^3.0.7"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/"
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts"
