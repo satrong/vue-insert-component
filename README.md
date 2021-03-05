@@ -1,4 +1,4 @@
-> Insert Vue component into root component.
+> Insert Vue component into root component for Vue 3.
 
 ## Usage
 ```js
@@ -42,7 +42,7 @@ export default defineComponent({
     remove() {
       this.$uninsert()
       // or
-      // this.$emit('uninsert', this) // must pass this`
+      // this.$emit('uninsert', this) // must pass `this`
     }
   }
 })
