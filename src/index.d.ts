@@ -8,6 +8,7 @@ type removeComponentCallback = () => void
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    $insert(component: Component): removeComponentCallback
+    $insert(component: Component): removeComponentCallback;
+    $uninsert(): removeComponentCallback;
   }
 }
