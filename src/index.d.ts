@@ -1,6 +1,6 @@
 import { Component, App } from 'vue'
 
-declare function InsertWrap(rootCompoent: Component): { rootApp: App<Element> }
+declare function InsertWrap(rootCompoent: Component): App<Element>
 
 export default InsertWrap
 

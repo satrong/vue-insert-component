@@ -1,7 +1,9 @@
 import {
   DefineComponent, Component, PropType, getCurrentInstance,
-  defineComponent, h, shallowRef, triggerRef
+  defineComponent, h, shallowRef, triggerRef, ComponentPublicInstance, VNode
 } from 'vue'
+
+const uidKey = '__insertComponentUid'
 
 export default defineComponent({
   name: 'InsertWrap',
@@ -11,31 +13,44 @@ export default defineComponent({
     }
   },
   setup () {
-    const list = shallowRef([] as DefineComponent[])
+    const list = shallowRef([] as VNode[])
 
     const instance = getCurrentInstance()
-    if (instance) {
-      instance.appContext.config.globalProperties.$insert = (component: DefineComponent) => {
-        list.value.push(component)
-        triggerRef(list)
-      }
-    }
 
-    return {
-      list,
-      onClose (component: DefineComponent) {
-        const index = list.value.findIndex(el => el === component)
+    const getUid = () => Number(String(Math.random()).slice(-6) + new Date().getMilliseconds()).toString(32)
+
+    const onClose = function (this:ComponentPublicInstance | undefined, ctx?: ComponentPublicInstance) {
+      const that = ctx || this
+      if (that) {
+        const index = list.value.findIndex(el => {
+          return el.props !== null ? el.props[uidKey] === that.$attrs[uidKey] : false
+        })
         list.value.splice(index, 1)
         triggerRef(list)
       }
     }
+
+    if (instance) {
+      Object.assign(instance.appContext.config.globalProperties, {
+        $insert: (component: DefineComponent) => {
+          const uid = getUid()
+          list.value.push(h(component, {
+            [uidKey]: uid,
+            key: uid,
+            onUninsertOnce: onClose
+          }))
+          triggerRef(list)
+        },
+        $uninsert: onClose
+      })
+    }
+
+    return { list }
   },
   render () {
     return [
       this.rootComponent ? h(this.rootComponent) : h('div'),
-      ...this.list.map(item => h(item, {
-        onUninsertOnce: () => this.onClose(item)
-      }))
+      ...this.list
     ]
   }
 })
