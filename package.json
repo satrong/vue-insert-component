@@ -2,13 +2,15 @@
   "name": "vue-insert-component",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/vue-insert-component.umd.js",
-  "browser": "dist/vue-insert-component.umd.js",
+  "main": "dist/vue-insert-component.es.js",
+  "unpkg": "dist/vue-insert-component.global.js",
+  "module": "dist/vue-insert-component.esm-bundler.js",
+  "browser": "dist/vue-insert-component.es.js",
   "scripts": {
     "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "satrong",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.12.10",
