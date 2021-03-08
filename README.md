@@ -1,5 +1,10 @@
 > Insert Vue component into root component for Vue 3.
 
+## `$insert(options)`
+- `options.component` `{Component}` **required**. 
+- `options.props` `{object}` Merge to `options.component`'s props.
+- `options.callback(...args1)` `{function}` When exec `$uninsert(...args2)` this function will be fired. The `args1` is from `args2`
+
 ## Usage
 ```js
 import insertComponent from 'vue-insert-component'
@@ -21,7 +26,15 @@ import DialogForm from './DialogForm.vue'
 export default defineComponent({
   methods: {
     add() {
-      this.$insert(DialogForm)
+      this.$insert({
+        component: DialogForm,
+        props: {
+          name: 'Vue'
+        },
+        callback(a, b) {
+          console.log(a, b) // hi, Vue
+        }
+      })
     }
   }
 })
@@ -38,11 +51,12 @@ export default defineComponent({
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+  props: {
+    name: String
+  },
   methods: {
     remove() {
-      this.$uninsert()
-      // or
-      // this.$emit('uninsert', this) // must pass `this`
+      this.$uninsert('hi', this.name)
     }
   }
 })

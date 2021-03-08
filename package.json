@@ -1,6 +1,6 @@
 {
   "name": "vue-insert-component",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/vue-insert-component.es.js",
   "unpkg": "dist/vue-insert-component.global.js",
@@ -48,6 +48,5 @@
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",
-  "dependencies": {
-  }
+  "dependencies": {}
 }
