@@ -2,10 +2,12 @@ import { Component, App } from 'vue'
 
 declare function InsertWrap(rootCompoent: Component): App<Element>
 
+export type Callback = (...args: any[]) => void;
+
 export interface InsertOptions {
   component: Component;
   props?: { [key: string]: any };
-  callback?: (...args: any[]) => void;
+  callback?: Callback;
 }
 
 export default InsertWrap

@@ -2,10 +2,9 @@ import {
   Component, PropType, getCurrentInstance,
   defineComponent, h, shallowRef, triggerRef, ComponentPublicInstance, VNode
 } from 'vue'
-import { InsertOptions } from './index.d'
+import { InsertOptions, Callback } from './index.d'
 
 const uidKey = '__insertComponentUid'
-const cbName = uidKey + 'Cb'
 
 type CustomComponentInstance = ComponentPublicInstance | undefined
 
@@ -18,6 +17,7 @@ export default defineComponent({
   },
   setup () {
     const list = shallowRef([] as VNode[])
+    const cacheCallbacks: { [key: string]: Callback | undefined } = {}
 
     const instance = getCurrentInstance()
 
@@ -26,13 +26,17 @@ export default defineComponent({
     const onClose = function (this: CustomComponentInstance, ...args: any[]) {
       const that = this
       if (that) {
+        const uidKeyVal = that.$attrs[uidKey] as string
         const index = list.value.findIndex(el => {
-          return el.props !== null ? el.props[uidKey] === that.$attrs[uidKey] : false
+          return el.props !== null ? el.props[uidKey] === uidKeyVal : false
         })
         list.value.splice(index, 1)
         triggerRef(list)
-        if (typeof that.$attrs.__insertComponentUidCb === 'function') {
-          that.$attrs.__insertComponentUidCb(...args)
+
+        const next = cacheCallbacks[uidKeyVal]
+        if (typeof next === 'function') {
+          next(...args)
+          delete cacheCallbacks[uidKeyVal]
         }
       }
     }
@@ -41,9 +45,11 @@ export default defineComponent({
       Object.assign(instance.appContext.config.globalProperties, {
         $insert: (options: InsertOptions) => {
           const uid = getUid()
+          if (typeof options.callback === 'function') {
+            cacheCallbacks[uid] = options.callback
+          }
           list.value.push(h(options.component as any, {
             [uidKey]: uid,
-            [cbName]: options.callback,
             key: uid,
             ...options.props,
             onUninsertOnce: onClose
