@@ -1,9 +1,10 @@
+import { defineConfig } from 'rollup'
+import type { RollupOptions, ModuleFormat } from 'rollup'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
-import pkg from './package.json'
 import babel from '@rollup/plugin-babel'
 
 (async () => await fs.rm(path.join(__dirname, 'dist'), { recursive: true, force: true }))()
@@ -17,30 +18,22 @@ function CopyFile () {
   }
 }
 
-const rollupConfigs = []
+const rollupConfigs: RollupOptions[] = []
 
-const outputConfigs = {
-  'esm-bundler': {
-    file: pkg.module,
-    format: 'es'
-  },
-  global: {
-    file: pkg.unpkg,
-    format: 'iife'
-  },
-  esm: {
-    file: pkg.browser,
-    format: 'es'
-  }
-}
+type ConfigItem = { format: ModuleFormat; file: string }
+const outputConfigs: ConfigItem[] = [
+  { format: 'commonjs', file: '.cjs' },
+  { format: 'iife', file: '.js' },
+  { format: 'es', file: '.mjs' }
+]
 
-function createConfig (format, config) {
-  return {
+function createConfig (config: ConfigItem) {
+  return defineConfig({
     input: 'src/index.ts',
     output: {
-      file: config.file,
+      file: `./dist/vue-insert-component${config.file}`,
       format: config.format,
-      name: format === 'global' ? 'VueInsertComponent' : 'vue-insert-component',
+      name: config.format === 'iife' ? 'VueInsertComponent' : 'vue-insert-component',
       globals: {
         vue: 'Vue'
       }
@@ -56,11 +49,11 @@ function createConfig (format, config) {
       CopyFile()
     ],
     external: ['vue']
-  }
+  })
 }
 
-Object.entries(outputConfigs).forEach(([key, config]) => {
-  rollupConfigs.push(createConfig(key, config))
+outputConfigs.forEach(item => {
+  rollupConfigs.push(createConfig(item))
 })
 
 module.exports = rollupConfigs

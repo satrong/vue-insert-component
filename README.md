@@ -1,16 +1,19 @@
 > Insert Vue component into root component for Vue 3.
 
-## `$insert(options)`
+## `insertComponent(App, ContainerComponent?)`
+
+## `$insert(options, ContainerComponent?)`
 - `options.component` `{Component}` **required**. 
 - `options.props` `{object}` Merge to `options.component`'s props.
 - `options.callback(...args1)` `{function}` When exec `$uninsert(...args2)` this function will be fired. The `args1` is from `args2`
 
 ## Usage
 ```js
+import { createApp } from 'vue'
 import insertComponent from 'vue-insert-component'
 import App from './App.vue'
 
-insertComponent(App).mount('#app')
+createApp(insertComponent(App)).mount('#app')
 ```
 
 `Foo.vue` component:

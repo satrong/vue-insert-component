@@ -1,7 +1,8 @@
 import {
-  Component, PropType, getCurrentInstance,
-  defineComponent, h, shallowRef, triggerRef, ComponentPublicInstance, VNode
+  getCurrentInstance,
+  defineComponent, h, shallowRef, triggerRef
 } from 'vue'
+import type { PropType, ComponentPublicInstance, VNode, Component } from 'vue'
 import { InsertOptions, Callback } from './index.d'
 
 const uidKey = '__insertComponentUid'
@@ -11,11 +12,9 @@ type CustomComponentInstance = ComponentPublicInstance | undefined
 export default defineComponent({
   name: 'InsertWrap',
   props: {
-    rootComponent: {
-      type: Object as PropType<Component>
-    }
+    containerComponent: Object as PropType<Component>
   },
-  setup () {
+  setup (props) {
     const list = shallowRef([] as VNode[])
     const cacheCallbacks: { [key: string]: Callback | undefined } = {}
 
@@ -43,29 +42,35 @@ export default defineComponent({
 
     if (instance) {
       Object.assign(instance.appContext.config.globalProperties, {
-        $insert: (options: InsertOptions) => {
+        $insert: (options: InsertOptions, container?: Component) => {
           const uid = getUid()
           if (typeof options.callback === 'function') {
             cacheCallbacks[uid] = options.callback
           }
-          list.value.push(h(options.component as any, {
+
+          const child = h(options.component as any, {
             [uidKey]: uid,
             key: uid,
             ...options.props,
             onUninsertOnce: onClose
-          }))
+          })
+
+          const comp = container || props.containerComponent
+          if (comp) {
+            const c = h(comp as any, { title: options.title }, {
+              default: () => child
+            })
+            list.value.push(c)
+          } else {
+            list.value.push(child)
+          }
+
           triggerRef(list)
         },
         $uninsert: onClose
       })
     }
 
-    return { list }
-  },
-  render () {
-    return [
-      this.rootComponent ? h(this.rootComponent) : h('div'),
-      ...this.list
-    ]
+    return () => list.value.map(el => h(el))
   }
 })
