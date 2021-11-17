@@ -1,6 +1,7 @@
 > Insert Vue component into root component for Vue 3.
 
 ## `insertComponent(App, ContainerComponent?)`
+> `App` component __must include default slot__.
 
 ## `$insert(options, ContainerComponent?)`
 - `options.component` `{Component}` **required**. 
