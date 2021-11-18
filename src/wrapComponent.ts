@@ -57,7 +57,7 @@ export default defineComponent({
 
           const comp = container || props.containerComponent
           if (comp) {
-            const c = h(comp as any, { title: options.title }, {
+            const c = h(comp as any, { options }, {
               default: () => child
             })
             list.value.push(c)
