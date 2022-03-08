@@ -66,3 +66,30 @@ export default defineComponent({
 })
 </script>
 ```
+
+## Composition API
+```html
+<template>
+  <button @click="add">insert DialogForm to root component</button>
+</template>
+
+<script>
+import { defineComponent } from 'vue'
+import { useInsert } from 'vue-insert-component'
+import DialogForm from './DialogForm.vue'
+
+export default defineComponent({
+  setup() {
+    const closeHandler = useInsert({
+      component: DialogForm,
+      props: {
+        name: 'Vue'
+      },
+      callback(a, b) {
+        console.log(a, b) // hi, Vue
+      }
+    })
+  }
+})
+</script>
+```

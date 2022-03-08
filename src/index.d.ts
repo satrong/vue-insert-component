@@ -1,4 +1,4 @@
-import { Component } from 'vue'
+import type { Component } from 'vue'
 
 declare function InsertWrap(rootCompoent: Component, containerComponent?: Component): Component
 
@@ -12,13 +12,14 @@ export interface InsertOptions extends Record<string, any> {
   callback?: Callback;
 }
 
-export default InsertWrap
+type uninsertCallback = () => void
+declare function useInsert (options: InsertOptions, containerComponent?: Component): uninsertCallback;
 
-type removeComponentCallback = () => void
+export { InsertWrap as default, useInsert }
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    $insert(options: InsertOptions, containerComponent?: Component): removeComponentCallback;
-    $uninsert(...args: any[]): removeComponentCallback;
+    $insert: (options: InsertOptions, containerComponent?: Component) => uninsertCallback;
+    $uninsert(...args: any[]): void;
   }
 }

@@ -36,7 +36,8 @@ function createConfig (config: ConfigItem) {
       name: config.format === 'iife' ? 'VueInsertComponent' : 'vue-insert-component',
       globals: {
         vue: 'Vue'
-      }
+      },
+      exports: 'named'
     },
     plugins: [
       resolve(),
