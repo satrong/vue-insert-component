@@ -1,6 +1,6 @@
 import {
   getCurrentInstance, useAttrs,
-  defineComponent, defineProps, h, shallowRef, triggerRef
+  defineComponent, h, shallowRef, triggerRef
 } from 'vue'
 import type { PropType, VNode, Component } from 'vue'
 import { InsertOptions, Callback } from './index.d'
@@ -38,11 +38,15 @@ function insert (options: InsertOptions, container = defaultContainerComponent) 
     [uidKey]: uid,
     key: uid,
     ...options.props,
-    onUninsertOnce: onClose(uid)
+    onUninsertOnce: onClose(uid),
+    onClose: onClose(uid)
   })
 
   if (container) {
-    const c = h(container as any, { options }, {
+    const c = h(container as any, {
+      options,
+      onClose: onClose(uid)
+    }, {
       default: () => child
     })
     list.value.push(c)
@@ -59,10 +63,10 @@ export const useInsert = insert
 
 export default defineComponent({
   name: 'InsertWrap',
-  setup () {
-    const props = defineProps({
-      containerComponent: Object as PropType<Component>
-    })
+  props: {
+    containerComponent: Object as PropType<Component>
+  },
+  setup (props) {
     const instance = getCurrentInstance()
     const attrs = useAttrs()
     defaultContainerComponent = props.containerComponent
