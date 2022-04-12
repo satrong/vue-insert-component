@@ -61,6 +61,23 @@ function insert (options: InsertOptions, container = defaultContainerComponent) 
 
 export const useInsert = insert
 
+export function useUninsert () {
+  const instance = getCurrentInstance()
+
+  const tryClose = (...args: any[]) => {
+    if (instance) {
+      const uid = instance.attrs[uidKey] as string
+      if (uid) {
+        onClose(uid)(...args)
+        return true
+      }
+    }
+    return false
+  }
+
+  return tryClose
+}
+
 export default defineComponent({
   name: 'InsertWrap',
   props: {

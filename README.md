@@ -70,26 +70,40 @@ export default defineComponent({
 ## Composition API
 ```html
 <template>
-  <button @click="add">insert DialogForm to root component</button>
+  <button @click="onAdd">insert DialogForm to root component</button>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
 import { useInsert } from 'vue-insert-component'
 import DialogForm from './DialogForm.vue'
 
-export default defineComponent({
-  setup() {
-    const closeHandler = useInsert({
-      component: DialogForm,
-      props: {
-        name: 'Vue'
-      },
-      callback(a, b) {
-        console.log(a, b) // hi, Vue
-      }
-    })
-  }
-})
+function onAdd() {
+  useInsert({
+    component: DialogForm,
+    props: {
+      name: 'Vue'
+    },
+    callback(a, b) {
+      console.log(a, b) // hi, Vue
+    }
+  })
+}
+</script>
+```
+
+`DialogForm.vue` component:
+```html
+<template>
+  <button @click="onClose">remove this component from root component</button>
+</template>
+
+<script setup>
+import { useUninsert } from 'vue-insert-component'
+
+const uninsert = useUninsert()
+
+function onClose() {
+  uninsert('hi', 'vue')
+}
 </script>
 ```

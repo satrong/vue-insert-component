@@ -15,7 +15,10 @@ export interface InsertOptions extends Record<string, any> {
 type uninsertCallback = () => void
 declare function useInsert (options: InsertOptions, containerComponent?: Component): uninsertCallback;
 
-export { InsertWrap as default, useInsert }
+type tryClose = (...args: any[]) => void
+declare function useUninsert (): tryClose;
+
+export { InsertWrap as default, useInsert, useUninsert }
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
