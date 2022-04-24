@@ -18,7 +18,9 @@ declare function useInsert (options: InsertOptions, containerComponent?: Compone
 type tryClose = (...args: any[]) => void
 declare function useUninsert (): tryClose;
 
-export { InsertWrap as default, useInsert, useUninsert }
+declare function createInsert(baseOptions: InsertOptions, containerComponent?: Component): uninsertCallback;
+
+export { InsertWrap as default, useInsert, useUninsert, createInsert }
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
