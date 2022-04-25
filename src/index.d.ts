@@ -18,7 +18,7 @@ declare function useInsert (options: InsertOptions, containerComponent?: Compone
 type tryClose = (...args: any[]) => void
 declare function useUninsert (): tryClose;
 
-declare function createInsert(baseOptions: InsertOptions, containerComponent?: Component): uninsertCallback;
+declare function createInsert(baseOptions: InsertOptions, containerComponent?: Component): (options: Partial<InsertOptions>, containerComponent?: Component) => uninsertCallback;
 
 export { InsertWrap as default, useInsert, useUninsert, createInsert }
 

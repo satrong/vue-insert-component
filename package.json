@@ -1,6 +1,6 @@
 {
   "name": "vue-insert-component",
-  "version": "2.3.0-beta4",
+  "version": "2.3.0-beta7",
   "description": "",
   "main": "dist/vue-insert-component.mjs",
   "exports": {
