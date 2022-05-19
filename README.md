@@ -3,6 +3,14 @@
 ## `insertComponent(App, ContainerComponent?)`
 > `App` component __must include default slot__.
 
+_App.vue_:
+```vue
+<template>
+  <div></div>
+  <slot /> <!-- must use default slot -->
+</template>
+```
+
 ## `$insert(options, ContainerComponent?)`
 - `options.component` `{Component}` **required**. 
 - `options.props` `{object}` Merge to `options.component`'s props.
