@@ -39,7 +39,7 @@ function insert (options: InsertOptions, container = defaultContainerComponent) 
     [uidKey]: uid,
     key: uid,
     ...options.props,
-    onUninsertOnce: onClose(uid),
+    onPluckOnce: onClose(uid),
     onClose: onClose(uid)
   })
 
@@ -62,7 +62,7 @@ function insert (options: InsertOptions, container = defaultContainerComponent) 
 
 export const useInsert = insert
 
-export function useUninsert () {
+export function usePluck () {
   const instance = getCurrentInstance()
 
   const tryClose = (...args: any[]) => {
@@ -79,6 +79,11 @@ export function useUninsert () {
   return tryClose
 }
 
+/**
+ * @deprecated use `usePluck` instead
+ */
+export const useUnInsert = usePluck
+
 export default defineComponent({
   name: 'InsertWrap',
   props: {
@@ -91,7 +96,11 @@ export default defineComponent({
     if (instance) {
       Object.assign(instance.appContext.config.globalProperties, {
         $insert: insert,
-        $uninsert: onClose(attrs[uidKey] as string)
+        /**
+         * @deprecated use `$pluck` instead
+         */
+        $uninsert: onClose(attrs[uidKey] as string),
+        $pluck: onClose(attrs[uidKey] as string)
       })
     }
 
