@@ -1,6 +1,6 @@
 {
   "name": "vue-insert-component",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "Insert Vue component into root component for Vue 3.",
   "main": "dist/vue-insert-component.mjs",
   "exports": {
