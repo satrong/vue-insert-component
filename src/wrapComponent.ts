@@ -4,6 +4,7 @@ import {
 } from 'vue'
 import type { PropType, VNode, Component } from 'vue'
 import { InsertOptions, Callback } from './index.d'
+import { omit } from './helper'
 
 const uidKey = '__insertComponentUid'
 
@@ -44,7 +45,7 @@ function insert (options: InsertOptions, container = defaultContainerComponent) 
 
   if (container) {
     const c = h(container as any, {
-      options,
+      ...omit(options, ['component', 'props', 'callback']),
       onClose: onClose(uid)
     }, {
       default: () => child
