@@ -1,15 +1,19 @@
 {
   "name": "vue-insert-component",
   "version": "2.3.0-beta9",
-  "description": "",
+  "description": "Insert Vue component into root component for Vue 3.",
   "main": "dist/vue-insert-component.mjs",
   "exports": {
     ".": {
-      "import": "./dist/vue-insert-component.mjs",
-      "require": "./dist/vue-insert-component.cjs"
+      "default": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/vue-insert-component.mjs",
+        "require": "./dist/vue-insert-component.cjs"
+      }
     },
     "./*": "./*"
   },
+  "type": "module",
   "module": "./dist/vue-insert-component.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -28,6 +32,7 @@
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-typescript": "^8.3.0",
+    "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "babel-plugin-external-helpers": "^6.22.0",
