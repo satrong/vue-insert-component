@@ -1,4 +1,6 @@
-> Insert Vue component into root component for Vue 3.
+Insert Vue component into root component for Vue 3.
+
+English | [简体中文](./README-zh.md)
 
 ## `insertComponent(App, ContainerComponent?)`
 > `App` component __must include default slot__.
@@ -25,7 +27,7 @@ import App from './App.vue'
 createApp(insertComponent(App)).mount('#app')
 ```
 
-`Foo.vue` component:
+_Foo.vue_ component:
 ```html
 <template>
   <button @click="add">insert DialogForm to root component</button>
@@ -53,7 +55,7 @@ export default defineComponent({
 </script>
 ```
 
-`DialogForm.vue` component:
+_DialogForm.vue_ component:
 ```html
 <template>
   <button @click="remove">remove this component from root component</button>
@@ -99,7 +101,7 @@ function onAdd() {
 </script>
 ```
 
-`DialogForm.vue` component:
+_DialogForm.vue_ component:
 ```html
 <template>
   <button @click="onClose">remove this component from root component</button>

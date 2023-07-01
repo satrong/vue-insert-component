@@ -1,63 +1,59 @@
 import {
-  getCurrentInstance, useAttrs,
+  getCurrentInstance,
   defineComponent, h, shallowRef, triggerRef
 } from 'vue'
-import type { PropType, VNode, Component } from 'vue'
+import type { PropType, VNode, Component, ComponentInternalInstance } from 'vue'
 import { InsertOptions, Callback } from './index.d'
 import { omit } from './helper'
 
-const uidKey = '__insertComponentUid'
-
-const getUid = () => Number(String(Math.random()).slice(-6) + new Date().getMilliseconds()).toString(32)
 const list = shallowRef([] as VNode[])
-const cacheCallbacks: { [key: string]: Callback | undefined } = {}
+const cbMap = new WeakMap<VNode, Callback>()
 let defaultContainerComponent: Component | undefined
 
-const onClose = (uidKeyVal: string) => {
+const onClose = (vnode: VNode) => {
   return (...args: any[]) => {
-    const index = list.value.findIndex(el => {
-      return el.props !== null ? el.props[uidKey] === uidKeyVal : false
-    })
+    const index = list.value.indexOf(vnode)
     list.value.splice(index, 1)
     triggerRef(list)
 
-    const next = cacheCallbacks[uidKeyVal]
-    if (typeof next === 'function') {
-      next(...args)
-      cacheCallbacks[uidKeyVal] = undefined
+    if (cbMap.has(vnode)) {
+      cbMap.get(vnode)?.(...args)
+      cbMap.delete(vnode)
     }
   }
 }
 
 function insert (options: InsertOptions, container = defaultContainerComponent) {
-  const uid = getUid()
-  if (typeof options.callback === 'function') {
-    cacheCallbacks[uid] = options.callback
-  }
+  let itemVNode: VNode
 
+  options.component.inheritAttrs = true
   const child = h(options.component as any, {
-    [uidKey]: uid,
-    key: uid,
     ...options.props,
-    onPluckOnce: onClose(uid),
-    onClose: onClose(uid)
+    key: Math.random()
   })
 
   if (container) {
-    const c = h(container as any, {
+    itemVNode = h(container as any, {
       ...omit(options, ['component', 'props', 'callback']),
-      onClose: onClose(uid)
+      onClose: (...args: any[]) => {
+        onClose(itemVNode)(...args)
+      }
     }, {
       default: () => child
     })
-    list.value.push(c)
+    list.value.push(itemVNode)
   } else {
+    itemVNode = child
     list.value.push(child)
+  }
+
+  if (typeof options.callback === 'function') {
+    cbMap.set(itemVNode, options.callback)
   }
 
   triggerRef(list)
 
-  return onClose(uid)
+  return onClose(itemVNode)
 }
 
 export const useInsert = insert
@@ -67,16 +63,31 @@ export function usePluck () {
 
   const tryClose = (...args: any[]) => {
     if (instance) {
-      const uid = instance.attrs[uidKey] as string
-      if (uid) {
-        onClose(uid)(...args)
-        return true
+      const container = getCurrentContainer(instance)
+      if (typeof container?.exposed?.close === 'function') {
+        container.exposed.close(...args)
+      } else {
+        onClose(instance.vnode)(...args)
       }
+      return true
     }
     return false
   }
 
   return tryClose
+}
+
+function getCurrentContainer (instance: ComponentInternalInstance) {
+  let prev = instance
+  let p = instance.parent
+  while (p) {
+    if (p.type.name === 'InsertWrap') {
+      return prev
+    }
+    prev = p
+    p = p.parent
+  }
+  return null
 }
 
 /**
@@ -91,7 +102,6 @@ export default defineComponent({
   },
   setup (props) {
     const instance = getCurrentInstance()
-    const attrs = useAttrs()
     defaultContainerComponent = props.containerComponent
     if (instance) {
       Object.assign(instance.appContext.config.globalProperties, {
@@ -99,8 +109,8 @@ export default defineComponent({
         /**
          * @deprecated use `$pluck` instead
          */
-        $uninsert: onClose(attrs[uidKey] as string),
-        $pluck: onClose(attrs[uidKey] as string)
+        $uninsert: onClose(instance.vnode),
+        $pluck: onClose(instance.vnode)
       })
     }
 
